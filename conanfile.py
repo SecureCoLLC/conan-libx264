@@ -15,8 +15,8 @@ class LibX264Conan(ConanFile):
     license = "http://git.videolan.org/?p=x264.git;a=blob;f=COPYING"
     exports_sources = ["CMakeLists.txt", "LICENSE"]
     settings = "os", "arch", "compiler", "build_type"
-    options = {"shared": [True, False], "fPIC": [True, False], "bit_depth": [8, 10]}
-    default_options = {'shared': False, 'fPIC': True, 'bit_depth': '8'}
+    options = {"shared": [True, False], "fPIC": [True, False], "bit_depth": [8, 10], 'no_asm': [True, False]}
+    default_options = {'shared': False, 'fPIC': True, 'bit_depth': '8', 'no_asm': False}
     build_requires = "nasm_installer/2.13.02@bincrafters/stable"
     _source_subfolder = "sources"
 
@@ -58,6 +58,8 @@ class LibX264Conan(ConanFile):
             if self.settings.build_type == 'Debug':
                 args.append('--enable-debug')
             args.append('--bit-depth=%s' % str(self.options.bit_depth))
+            if self.options.no_asm:
+                args.append('--disable-asm')
 
             env_vars = dict()
             if self._is_msvc:
