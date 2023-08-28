@@ -14,7 +14,7 @@ class LibX264Conan(ConanFile):
     exports_sources = ["CMakeLists.txt", "LICENSE"]
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False], "bit_depth": [8, 10, "all"]}
-    default_options = {'shared': False, 'fPIC': True, 'bit_depth': 'all'}
+    default_options = {'shared': False, 'fPIC': True, 'bit_depth': 'all', 'no_asm': False}
     build_requires = "nasm/2.13.02"
     _source_subfolder = "sources"
     _override_env = {}
@@ -65,6 +65,9 @@ class LibX264Conan(ConanFile):
             if self.settings.build_type == 'Debug':
                 args.append('--enable-debug')
             args.append('--bit-depth=%s' % str(self.options.bit_depth))
+
+            if self.options.no_asm:
+                args.append('--disable-asm')
 
             if tools.cross_building(self.settings):
                 if self.settings.os == "Android":
